@@ -1,5 +1,5 @@
-import { open } from "@tauri-apps/api/dialog";
 import { SortMode, FilterMode } from "../lib/types";
+import { isTauri } from "../lib/platform";
 
 interface ToolbarProps {
   onImport: (path: string) => void;
@@ -29,9 +29,15 @@ function Toolbar({
   statusMessage,
 }: ToolbarProps) {
   const handleOpenFolder = async () => {
-    const selected = await open({ directory: true, multiple: false });
-    if (selected && typeof selected === "string") {
-      onImport(selected);
+    if (isTauri()) {
+      const { open } = await import("@tauri-apps/api/dialog");
+      const selected = await open({ directory: true, multiple: false });
+      if (selected && typeof selected === "string") {
+        onImport(selected);
+      }
+    } else {
+      // Browser demo mode – load demo data
+      onImport("/demo");
     }
   };
 
@@ -43,7 +49,7 @@ function Toolbar({
           onClick={handleOpenFolder}
           disabled={loading}
         >
-          {loading ? "Processing..." : "Import Folder"}
+          {loading ? "Processing..." : isTauri() ? "Import Folder" : "Load Demo"}
         </button>
         <button
           className="btn btn-accent"
