@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Photo } from "../lib/types";
 import { getPhotoThumbnail } from "../lib/api";
+import { isTauri } from "../lib/platform";
 
 interface PhotoDetailProps {
   photo: Photo;
@@ -31,6 +32,7 @@ function PhotoDetail({ photo, onStatusChange, onClose }: PhotoDetailProps) {
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!isTauri()) return;
     let cancelled = false;
     getPhotoThumbnail(photo.file_path).then((data) => {
       if (!cancelled) setPreview(data);
@@ -57,7 +59,9 @@ function PhotoDetail({ photo, onStatusChange, onClose }: PhotoDetailProps) {
         {preview ? (
           <img src={`data:image/jpeg;base64,${preview}`} alt={photo.file_name} />
         ) : (
-          <div className="thumbnail-placeholder">Loading preview...</div>
+          <div className="thumbnail-placeholder" style={{ background: "#e8e8e8" }}>
+            {isTauri() ? "Loading preview..." : photo.file_name}
+          </div>
         )}
       </div>
 

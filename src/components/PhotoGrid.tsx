@@ -1,6 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Photo } from "../lib/types";
 import { getPhotoThumbnail } from "../lib/api";
+import { isTauri } from "../lib/platform";
+
+// Deterministic color for demo placeholders
+function demoColor(name: string): string {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 360;
+  return `hsl(${h}, 35%, 75%)`;
+}
 
 interface PhotoGridProps {
   photos: Photo[];
@@ -23,6 +31,7 @@ function PhotoCard({
   const [thumbnail, setThumbnail] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!isTauri()) return; // skip in browser demo mode
     let cancelled = false;
     getPhotoThumbnail(photo.file_path).then((data) => {
       if (!cancelled) setThumbnail(data);
@@ -53,7 +62,12 @@ function PhotoCard({
         {thumbnail ? (
           <img src={`data:image/jpeg;base64,${thumbnail}`} alt={photo.file_name} />
         ) : (
-          <div className="thumbnail-placeholder">Loading...</div>
+          <div
+            className="thumbnail-placeholder"
+            style={!isTauri() ? { background: demoColor(photo.file_name) } : undefined}
+          >
+            {isTauri() ? "Loading..." : photo.file_name.replace(/\.[^.]+$/, "")}
+          </div>
         )}
         <div className={`score-badge ${scoreColor}`}>
           {(photo.overall_score * 100).toFixed(0)}
@@ -101,7 +115,11 @@ function PhotoGrid({ photos, selectedId, onSelect, onStatusChange }: PhotoGridPr
       <div className="empty-state">
         <div className="empty-icon">&#128247;</div>
         <h2>No Photos Loaded</h2>
-        <p>Click "Import Folder" to select a folder of photos to analyze.</p>
+        <p>
+          {isTauri()
+            ? 'Click "Import Folder" to select a folder of photos to analyze.'
+            : 'Click "Load Demo" to see the app with sample data.'}
+        </p>
         <p className="empty-formats">
           Supported: JPG, PNG, TIFF, WebP, CR2, CR3, NEF, ARW, DNG, ORF, RW2, RAF
         </p>
