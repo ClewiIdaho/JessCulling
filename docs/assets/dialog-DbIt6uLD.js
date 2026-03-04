@@ -1,1 +1,0 @@
-import{invoke as n}from"./tauri-DFHPio5F.js";async function o(e){return n("tauri",e)}async function a(e={}){return typeof e=="object"&&Object.freeze(e),o({__tauriModule:"Dialog",message:{cmd:"openDialog",options:e}})}export{a as open};

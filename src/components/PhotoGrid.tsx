@@ -3,13 +3,6 @@ import { Photo } from "../lib/types";
 import { getPhotoThumbnail } from "../lib/api";
 import { isTauri } from "../lib/platform";
 
-// Deterministic color for demo placeholders
-function demoColor(name: string): string {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 360;
-  return `hsl(${h}, 35%, 75%)`;
-}
-
 interface PhotoGridProps {
   photos: Photo[];
   selectedId: string | null;
@@ -31,13 +24,13 @@ function PhotoCard({
   const [thumbnail, setThumbnail] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isTauri()) return; // skip in browser demo mode
     let cancelled = false;
-    getPhotoThumbnail(photo.file_path).then((data) => {
-      if (!cancelled) setThumbnail(data);
+    const key = isTauri() ? photo.file_path : photo.id;
+    getPhotoThumbnail(key).then((data) => {
+      if (!cancelled && data) setThumbnail(data);
     }).catch(() => {});
     return () => { cancelled = true; };
-  }, [photo.file_path]);
+  }, [photo.file_path, photo.id]);
 
   const scoreColor =
     photo.overall_score >= 0.6
@@ -60,14 +53,12 @@ function PhotoCard({
     >
       <div className="photo-thumbnail">
         {thumbnail ? (
-          <img src={`data:image/jpeg;base64,${thumbnail}`} alt={photo.file_name} />
+          <img
+            src={thumbnail.startsWith("data:") ? thumbnail : `data:image/jpeg;base64,${thumbnail}`}
+            alt={photo.file_name}
+          />
         ) : (
-          <div
-            className="thumbnail-placeholder"
-            style={!isTauri() ? { background: demoColor(photo.file_name) } : undefined}
-          >
-            {isTauri() ? "Loading..." : photo.file_name.replace(/\.[^.]+$/, "")}
-          </div>
+          <div className="thumbnail-placeholder">Loading...</div>
         )}
         <div className={`score-badge ${scoreColor}`}>
           {(photo.overall_score * 100).toFixed(0)}
@@ -118,10 +109,12 @@ function PhotoGrid({ photos, selectedId, onSelect, onStatusChange }: PhotoGridPr
         <p>
           {isTauri()
             ? 'Click "Import Folder" to select a folder of photos to analyze.'
-            : 'Click "Load Demo" to see the app with sample data.'}
+            : 'Click "Select Photos" to choose images for AI analysis.'}
         </p>
         <p className="empty-formats">
-          Supported: JPG, PNG, TIFF, WebP, CR2, CR3, NEF, ARW, DNG, ORF, RW2, RAF
+          {isTauri()
+            ? "Supported: JPG, PNG, TIFF, WebP, CR2, CR3, NEF, ARW, DNG, ORF, RW2, RAF"
+            : "Supported: JPG, PNG, WebP, BMP"}
         </p>
       </div>
     );

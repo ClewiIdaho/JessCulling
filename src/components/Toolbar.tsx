@@ -2,7 +2,7 @@ import { SortMode, FilterMode } from "../lib/types";
 import { isTauri } from "../lib/platform";
 
 interface ToolbarProps {
-  onImport: (path: string) => void;
+  onImport: (pathOrFiles: string) => void;
   onAutoCull: () => void;
   onExport: () => void;
   onShowDuplicates: () => void;
@@ -36,8 +36,8 @@ function Toolbar({
         onImport(selected);
       }
     } else {
-      // Browser demo mode – load demo data
-      onImport("/demo");
+      // Browser mode – file picker triggers import via api.ts
+      onImport("browser");
     }
   };
 
@@ -49,7 +49,7 @@ function Toolbar({
           onClick={handleOpenFolder}
           disabled={loading}
         >
-          {loading ? "Processing..." : isTauri() ? "Import Folder" : "Load Demo"}
+          {loading ? "Processing..." : isTauri() ? "Import Folder" : "Select Photos"}
         </button>
         <button
           className="btn btn-accent"

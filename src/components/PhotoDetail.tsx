@@ -32,13 +32,13 @@ function PhotoDetail({ photo, onStatusChange, onClose }: PhotoDetailProps) {
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isTauri()) return;
     let cancelled = false;
-    getPhotoThumbnail(photo.file_path).then((data) => {
-      if (!cancelled) setPreview(data);
+    const key = isTauri() ? photo.file_path : photo.id;
+    getPhotoThumbnail(key).then((data) => {
+      if (!cancelled && data) setPreview(data);
     }).catch(() => {});
     return () => { cancelled = true; };
-  }, [photo.file_path]);
+  }, [photo.file_path, photo.id]);
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -57,10 +57,13 @@ function PhotoDetail({ photo, onStatusChange, onClose }: PhotoDetailProps) {
 
       <div className="detail-preview">
         {preview ? (
-          <img src={`data:image/jpeg;base64,${preview}`} alt={photo.file_name} />
+          <img
+            src={preview.startsWith("data:") ? preview : `data:image/jpeg;base64,${preview}`}
+            alt={photo.file_name}
+          />
         ) : (
           <div className="thumbnail-placeholder" style={{ background: "#e8e8e8" }}>
-            {isTauri() ? "Loading preview..." : photo.file_name}
+            Loading preview...
           </div>
         )}
       </div>
