@@ -1,8 +1,7 @@
 # Dependencies
 node_modules/
 
-# Build output
-dist/
+# Build output (docs/ is committed for GitHub Pages)
 src-tauri/target/
 
 # IDE

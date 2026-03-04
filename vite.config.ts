@@ -4,6 +4,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig(async () => ({
   plugins: [react()],
   base: "./",
+  build: {
+    outDir: "docs",
+  },
   clearScreen: false,
   server: {
     port: 1420,
