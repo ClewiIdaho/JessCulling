@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { open } from "@tauri-apps/api/dialog";
 import { SortMode, FilterMode } from "../lib/types";
 

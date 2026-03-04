@@ -1,5 +1,6 @@
 use crate::db;
 use crate::scoring;
+use image::GenericImageView;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use walkdir::WalkDir;
@@ -272,5 +273,3 @@ pub async fn rescore_photo(file_path: String) -> Result<db::Photo, String> {
     db::insert_photo(&updated).map_err(|e| e.to_string())?;
     Ok(updated)
 }
-
-use image::GenericImageView;
