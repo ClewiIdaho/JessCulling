@@ -686,3 +686,192 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
+
+/* ============================================
+   Mobile Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Header */
+  .app-header {
+    padding: 10px 16px;
+  }
+
+  .header-title {
+    font-size: 15px;
+  }
+
+  .header-subtitle {
+    font-size: 11px;
+  }
+
+  /* Toolbar: stack into rows */
+  .toolbar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .toolbar-left {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .toolbar-center {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: flex-start;
+  }
+
+  .toolbar-right {
+    gap: 6px;
+  }
+
+  .btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .select {
+    padding: 8px 8px;
+    font-size: 12px;
+    max-width: 130px;
+  }
+
+  /* Main content: single column */
+  .main-content {
+    height: calc(100vh - 100px);
+    flex-direction: column;
+  }
+
+  /* Photo grid: smaller cards */
+  .photo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .photo-info {
+    padding: 6px 8px;
+  }
+
+  .photo-name {
+    font-size: 11px;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  /* Detail panel: full-screen overlay on mobile */
+  .photo-detail {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    width: 100%;
+    min-width: unset;
+    border-left: none;
+    background: var(--surface);
+    padding: 12px 16px;
+    overflow-y: auto;
+  }
+
+  .detail-actions {
+    padding-bottom: 24px;
+  }
+
+  .btn-keep-large,
+  .btn-reject-large {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  /* Modals: fit screen */
+  .modal {
+    width: calc(100vw - 24px);
+    max-height: 85vh;
+  }
+
+  .modal-wide {
+    width: calc(100vw - 24px);
+  }
+
+  .modal-header {
+    padding: 12px 16px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  /* Duplicate panel items: stack on small screens */
+  .dup-photo {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .dup-photo-name {
+    flex-basis: 100%;
+    font-size: 12px;
+  }
+
+  .dup-photo-score {
+    font-size: 11px;
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 40px 16px;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+  }
+
+  .empty-state h2 {
+    font-size: 18px;
+  }
+}
+
+/* Extra small screens (phones in portrait) */
+@media (max-width: 480px) {
+  .header-brand {
+    gap: 6px;
+  }
+
+  .header-subtitle {
+    display: none;
+  }
+
+  .photo-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .toolbar-left {
+    width: 100%;
+  }
+
+  .toolbar-right {
+    width: 100%;
+  }
+
+  .select {
+    flex: 1;
+    max-width: none;
+  }
+
+  .score-badge {
+    font-size: 11px;
+    padding: 1px 6px;
+  }
+
+  .duplicate-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 9px;
+  }
+}
